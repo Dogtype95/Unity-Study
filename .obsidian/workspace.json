@@ -1,0 +1,272 @@
+{
+  "main": {
+    "id": "279aa9edeb00051b",
+    "type": "split",
+    "children": [
+      {
+        "id": "8dc1fa338448b2c2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2cc8a695c4cbcd61",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Unity 1일차.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Unity 1일차"
+            }
+          },
+          {
+            "id": "22d09ae21e527f35",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Unity 2일차.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Unity 2일차"
+            }
+          },
+          {
+            "id": "d6f149bf055bc606",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Unity 4일차.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Unity 4일차"
+            }
+          },
+          {
+            "id": "f8fd5ff95109a48a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Unity 4일차.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Unity 4일차"
+            }
+          },
+          {
+            "id": "8493f6b23e63de42",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Unity 6일차.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Unity 6일차"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ea38573913562fa5",
+    "type": "split",
+    "children": [
+      {
+        "id": "f797c1b0dfc8b7df",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fa352b31fb2c1d53",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "7f3b1c72316fbfc5",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "6588874787c1f26d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "ecb6856b6cc01eb9",
+    "type": "split",
+    "children": [
+      {
+        "id": "d2db22232fc2fbed",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6391839bde532962",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Unity 3일차.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "백링크"
+            }
+          },
+          {
+            "id": "9c01b40f72a14496",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Unity 3일차.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "나가는 링크"
+            }
+          },
+          {
+            "id": "2f2e9b770ce885d0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "b0ebc15e61887127",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "6d25ad4fd8c0b3fe",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Unity 3일차.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false
+    }
+  },
+  "active": "8493f6b23e63de42",
+  "lastOpenFiles": [
+    "README.md",
+    "Unity 1일차.md",
+    "Unity 2일차.md",
+    "Unity 3일차.md",
+    "Unity 4일차.md",
+    "Unity 5일차.md",
+    "Unity 6일차.md",
+    "캡처/16.PNG",
+    "캡처/15.PNG",
+    "캡처/14.PNG",
+    "캡처/13.PNG",
+    "캡처/12.PNG",
+    "캡처/11.PNG",
+    "캡처/10.PNG",
+    "캡처/9.PNG",
+    "캡처/8.PNG",
+    "캡처/7.PNG",
+    "Unity 4일차",
+    "캡처",
+    "새 폴더",
+    "환영합니다!.md"
+  ]
+}
