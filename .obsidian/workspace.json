@@ -67,12 +67,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Unity 9일차.md",
+                "file": "평가에 필요한 거.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Unity 9일차"
+              "title": "평가에 필요한 거"
             }
           }
         ],
@@ -245,13 +245,14 @@
   },
   "active": "8705e21ec3979765",
   "lastOpenFiles": [
+    "README.md",
+    "Unity 8일차.md",
+    "Unity 9일차.md",
     "auto_push.bat",
     "auto_push.bat.txt",
     "새 텍스트 문서.txt",
     "평가에 필요한 거.md",
     "캡처/22.png",
-    "Unity 8일차.md",
-    "Unity 9일차.md",
     "캡처/18.PNG",
     "캡처/19.PNG",
     "캡처/20.png",
@@ -268,7 +269,6 @@
     "캡처/21_files/m=_b,_tp",
     "캡처/21_files/islands-A-YtrT7K.js.다운로드",
     "캡처/21_files/m=_b",
-    "캡처/21.html",
     "Unity Class.md",
     "Unity 4일차.md",
     "Unity 6일차.md",
@@ -277,7 +277,6 @@
     "Unity 5일차.md",
     "Unity 3일차.md",
     "Unity 2일차.md",
-    "README.md",
     "환영합니다!.md"
   ]
 }

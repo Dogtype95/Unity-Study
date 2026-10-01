@@ -22,6 +22,7 @@ Preference -> General -> Code Optimization On StartUp 에서 설정
 - 유니티에서 오브젝트를 생성할 땐 기본적으로 New를 사용하지 않고 (불가능은 아님)
 	기존 하이레키에 있던 오브젝트나 Prefab을 참조해서 생성한다.
 	Script에 하이레키나 Prefab을 드래그 드롭 해서 변수에 담을 수 도있다
+	
 ![[20.png]]
 
 ### 유니티 이벤트함수의 브로드캐스트 시스템
