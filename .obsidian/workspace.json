@@ -67,6 +67,20 @@
             "state": {
               "type": "markdown",
               "state": {
+                "file": "Unity 9일차.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Unity 9일차"
+            }
+          },
+          {
+            "id": "6ef6f46104485c99",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
                 "file": "평가에 필요한 거.md",
                 "mode": "source",
                 "source": false
@@ -76,7 +90,7 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "vertical"
@@ -243,15 +257,21 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "8705e21ec3979765",
+  "active": "6ef6f46104485c99",
   "lastOpenFiles": [
-    "README.md",
-    "Unity 8일차.md",
     "Unity 9일차.md",
+    "Unity 10일차.md",
+    "Unity 8일차.md",
+    "Unity 5일차.md",
+    "Unity 4일차.md",
+    "Unity 3일차.md",
+    "Unity 2일차.md",
+    "Unity 1일차.md",
+    "평가에 필요한 거.md",
+    "README.md",
     "auto_push.bat",
     "auto_push.bat.txt",
     "새 텍스트 문서.txt",
-    "평가에 필요한 거.md",
     "캡처/22.png",
     "캡처/18.PNG",
     "캡처/19.PNG",
@@ -270,13 +290,8 @@
     "캡처/21_files/islands-A-YtrT7K.js.다운로드",
     "캡처/21_files/m=_b",
     "Unity Class.md",
-    "Unity 4일차.md",
     "Unity 6일차.md",
     "Unity 7일차.md",
-    "Unity 1일차.md",
-    "Unity 5일차.md",
-    "Unity 3일차.md",
-    "Unity 2일차.md",
     "환영합니다!.md"
   ]
 }

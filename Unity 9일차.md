@@ -86,4 +86,5 @@ gameObject.BroadcastMessage("TakeDamage", 50, SendMessageOptions.DontRequireRece
     
 3. **가비지 컬렉션(GC Alloc):** 기본값 타입(int, float 등)을 파라미터로 넘길 때 `object` 형변환으로 인한 박싱(Boxing)이 발생합니다.
     
-4. **추적/디버깅 어려움:** IDE(Visual Studio, Rider)에서 "모든 참조 찾기"가 되지 않아 코드 유지보수성이 급격히 떨어집니다.
+4. **추적/디버깅 어려움:** IDE(Visual Studio, Rider)에서 "모든 참조 찾기"가 되지 않아 코드 유지보수성이 급격히 떨어집니다
+

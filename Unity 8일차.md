@@ -42,6 +42,9 @@ Unity `MonoBehaviour` 라이프사이클(Life Cycle)의 가장 핵심이 되는 
 ★ 어웨이크는 객체별로 돌기 때문에 다른 객체의 Awake와는 순서가 보장이 안되는걸 항상 염두해야 한다.
 ****** 
 
+★★★OnEnable은 아래에 정리
+순서는 Awake() OnEnable() Start() 순서임
+
 ### 2. Start()
 
 - **호출 시점:** 첫 번째 프레임 업데이트(`Update`)가 실행되기 직전에 **단 한 번** 호출됩니다.
