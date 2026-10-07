@@ -95,9 +95,124 @@ private void Awake()
 - Vector3 버전도 있음\
 
 
+### Update 함수
+
+### 1. 기본 특징 및 호출 주기
+
+- **가변 호출 주기:** 물리 연산처럼 일정한 시간 간격으로 실행되는 것이 아니라, 기기의 연산 성능 및 렌더링 부하에 따라 호출 횟수가 달라집니다 (FPS에 종속적).
+    
+    - 60 FPS 환경: 1초에 약 60회 호출
+        
+    - 144 FPS 환경: 1초에 약 144회 호출
+        
+- **주요 용도:**
+    
+    - 사용자 입력 처리 (`Input.GetKeyDown`, 마우스 클릭 등)
+        
+    - 프레임 기반 타이머 및 경과 시간 누적
+        
+    - 비물리 기반의 이동, 회전, 상태 전환 등 매 순간 즉각 반응해야 하는 게임 로직
+        
+
+### 2. Time.deltaTime 활용 (필수)
+
+기기마다 프레임률이 다르므로, 프레임에 비례하여 오브젝트를 이동시키면 고사양 기기에서 캐릭터가 더 빠르게 움직이는 치명적인 문제가 발생합니다. 이를 방지하기 위해 이전 프레임에서 현재 프레임까지 걸린 시간인 `Time.deltaTime`을 곱해 초당 이동량으로 보정해야 합니다.
+
+C#
+
+```
+void Update()
+{
+    // 잘못된 방식: 60fps에선 초당 60 유닛, 144fps에선 초당 144 유닛 이동
+    // transform.Translate(Vector3.forward * 1.0f);
+
+    // 올바른 방식: 프레임률과 상관없이 1초에 5 유닛씩 등속 이동
+    float speed = 5.0f;
+    transform.Translate(Vector3.forward * speed * Time.deltaTime);
+}
+```
+
+### 3. Update 패밀리 비교 (`Update` vs `FixedUpdate` vs `LateUpdate`)
+
+유니티는 실행 목적에 따라 세 가지 Update 메서드를 분리해 제공합니다.
+
+|**메서드**|**호출 주기**|**주 사용처**|**주의 사항**|
+|---|---|---|---|
+|**`Update`**|매 프레임 (가변)|입력 감지, 일반 타이머, UI 갱신, 카메라 외 로직|연산량이 많은 무거운 루프문이나 탐색(`Find`) 작성 금지|
+|**`FixedUpdate`**|고정 시간 간격 (기본 0.02초)|`Rigidbody` 물리 연산 (`AddForce`, `velocity`)|순간 입력을 감지하면 입력을 씹거나 중복 처리할 수 있음|
+|**`LateUpdate`**|매 프레임 (`Update` 완료 후)|카메라 추적, 조준 후 애니메이션 보정|타깃 오브젝트가 `Update`에서 이동을 끝낸 후 추적해야 화면 떨림이 없음|
+
+### 4. 실무 최적화 팁
+
+1. **빈 `Update()` 메서드는 삭제하기:**
+    
+    함수 내용이 비어 있더라도 스크립트에 `void Update() {}`가 선언되어 있으면 C++ 엔진 코어에서 C# 매니지드 영역으로 매 프레임 불필요한 P/Invoke 호출 오버헤드가 발생합니다.
+    
+2. **매 프레임 무거운 API 호출 피하기:**
+    
+    `FindObjectOfType`, `GameObject.Find`, `GetComponent` 등을 `Update` 안에서 매 프레임 호출하면 심각한 성능 저하가 발생합니다. `Awake`나 `Start`에서 미리 캐싱해 두고 사용해야 합니다.
+    
+3. **가비지 컬렉션(GC) 유발 코드 자제:**
+    
+    `Update` 내에서 `new` 키워드로 객체를 생성하거나 문자열 연결(`str + "abc"`)을 반복하면 GC 스파이크(프레임 드롭)의 주원인이 됩니다.
 
 
-64~ 59 6
-57~52 6
-46 1
-40~35 6
+### 벡터와 스칼라
+```text
+- 프로그래밍에서 기본적으로 벡터란 숫자를 여러개 가진것
+- 양의 숫자하나는 Scale에서 어원을 딴 스칼라(Scalar)라고 함
+- Vector의 크기(Magnitude)
+  
+- 길이가 1인 벡터를 노멀라이즈드 벡터(Normalized Vector) 정규화된 벡터
+	  또는 방향벡터라고도 함
+  ex) (3,4) 좌표의 대각선의 길이는 5가 나오는데 이 대각선 길이를 1로만듬(나머지 변은 나누기 5하면 됨)
+- 이를 이용해 방향벡터 x 스피드를 해주면 해당 프레임에 가야되는 이동량을 구할 수 있다.
+  
+```
+
+- 정규화된 벡터는 아래 느낌
+![[Pasted image 20261007153347.png|346]]
+
+- 정리하자면 정규화된 벡터 Nomalized Vector는 방향벡터라 불리고 방향을 표현, 점벡터는	위치를 표현한다.
+- 단위 벡터(스피드를 포함)는 방향벡터에 일정한 스피드량을 곱해준다면 스피드와 방향 둘다 나타낼수도 있는거다.
+
+### Lock View to Selected(Shift + F)
+- 하이레키에 있는 객체에 shift + f 를 누르면 선택한 대상에 뷰가 고정된다.
+
+### Translate 
+- transfrom.position
+
+ - 트랜스폼을 숏컷으로 가져오고 position 프로퍼티의 벡터값을 수정하면 객체의
+	 위치를 바꿀수 있다 Vector 클래스에는 Vector.up, Vector.down 등 방향벡터도 얻어올 수 있다.
+	 ![[Pasted image 20261007161834.png]]
+```text
+또는 transform.Translate(Vector3(0,1,0)); 이런식으로 이동
+```
+### Rotate
+
+- transform.rotate()
+- transform.rotation
+
+-  Space.World(월드기준 좌표) , Space.Self(객체 기준 자기자신)으로 보겠다는 것 transform.Translate(Vector3 a, Space space); 함수에서 기준점을 정해주는 용도의 값
+![[Pasted image 20261007163703.png]]
+
+```text
+로컬기준 즉 Space.Self로 y방향으로 이동하면 자기자신의 Y방향으로 이동한다.
+이미지 처럼
+```
+
+### 델타타임과 프레임 (DeltaTime, Frame)
+
+- DeltaTIme은 시간의 변화를 말하며 이전프레임과 다음프레임까지 도달하기까지 연산시간이 얼마나 걸렸는지를 의미함 프레임과 프레임사이의 타임이 델타타임
+- Time.DeltaTime 을 통해 얻을 수도 있다.
+
+- Application.targetFrameRate = 1; <- 게임에 프레임제한을 강제로 건것 이렇게 하면 1초당 1프레임이 돌아간다.
+
+- 1초당 1도 만큼 각도를 움직이고 싶다면
+```cs
+
+// 1프레임마다 1도 x 누적시간  누적시간이 1초가 되면 1도 x 1초 시간별로 움직일 수 있게 되는거다
+transform.Rotate(Vector3.up * Time.deltaTime);
+
+transform.Translate(Vector3.up * Time.deltaTime);
+```
