@@ -176,6 +176,29 @@ void Update()
 - 정리하자면 정규화된 벡터 Nomalized Vector는 방향벡터라 불리고 방향을 표현, 점벡터는	위치를 표현한다.
 - 단위 벡터(스피드를 포함)는 방향벡터에 일정한 스피드량을 곱해준다면 스피드와 방향 둘다 나타낼수도 있는거다.
 
+```cs
+public class Cube : MonoBehavior
+{
+	public float _speed; // 인스펙터에서 값 초기화
+	public Vector3 _dir; // 인스펙터에서 값 초기화
+
+	private void Update()
+	{
+		/* 기존 위치에서 _dir벡터의 정규화된 벡터와 _speed를 곱해서 
+		넣어주면 방향과 스피드를 맞춰서 이동 시킬 수 있다*/
+		transform.position
+		 = transform.position + (_dir.normalized * _speed);
+		 
+		 /*이를 풀어서 쓴다면 Vector3의 Magnitude를 이용해줘도 되지만 굳이*/
+		 
+	}
+
+}
+
+
+
+```
+
 ### Lock View to Selected(Shift + F)
 - 하이레키에 있는 객체에 shift + f 를 누르면 선택한 대상에 뷰가 고정된다.
 
@@ -216,3 +239,20 @@ transform.Rotate(Vector3.up * Time.deltaTime);
 
 transform.Translate(Vector3.up * Time.deltaTime);
 ```
+
+
+### Reset 함수
+
+- Reset함수는 에디터 전용 라이프사이클 메서드로 컴포넌트의 기본값을 설정하거나 
+	필수 의조선 컴포넌트를 자동으로 초기화할 때 사용된다.
+- 런타임(게임 빌드본 실행 중)에는 절대 호출되지 않는다.
+
+1. 호출 시점
+- **컴포넌트를 인스펙터에 처음 추가할 때:**
+    
+    `Add Component`를 통해 게임오브젝트에 스크립트를 붙이는 순간 1회 실행됩니다.
+    
+- **인스펙터의 Reset 메뉴를 누를 때:**
+    
+    컴포넌트 우측 상단의 점 세 개(⋮) 메뉴를 클릭하고 'Reset'을 선택할 때 실행됩니다.
+
