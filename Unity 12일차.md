@@ -32,7 +32,7 @@ if(Input.getKey)
 	~~~~~~
 }
 ```
-- Unity Input System 
+- Unity Input System 예시 (IsPressed로 해도댐)
 ```cs
 public class DHavior : MonoBehaviour
 {
@@ -120,12 +120,6 @@ public class DHavior : MonoBehaviour
 
 ### Vector.Distance (Vector3 a, Vector3 b)
 - 두 벡터간의 길이 구해줌
-
-### 쿼터니언 Quaternion
-
-- 
-
-
 
 ### 유니티 지터링(Jittering) 현상
 
@@ -233,5 +227,209 @@ fbx-model 탭에서 Bake Axis Conversion을 체크하시면 모델링 툴에서 
 ### 오일러 각 변수와 인스펙터 표기
 
 - 유니티의 xyz yaw pitch roll 오일러각 이라고도 함
-- transform.eulerAngles 의 값을 수정해서 각도를 수정할 수 도있음 근데 아마
-	transform.Rotate()를 쓰는 게 맞는 것 같음
+- transform.eulerAngles 의 값을 수정해서 각도를 수정할 수 도있음 하지만 오일러각은 인간이 디버깅하고 이해하기 쉽게 표기하는 값으로 실제 동작은 쿼터니언을 통해서 오브젝트를 회전 시키기 때문에 오일러각을 직접 증감시키거나해서 각도를 조절하면 짐벌락 현상이 발생할 수 있음
+
+
+### 1. 오일러 각 변수와 인스펙터 표기
+
+- **내부 데이터와 인스펙터의 차이**:
+    
+    - 유니티 내부에서 오브젝트의 실제 회전 데이터(`transform.rotation`)는 쿼터니언(Quaternion, $x, y, z, w$)으로 저장됩니다.
+        
+    - 쿼터니언은 사람이 직관적으로 이해하기 어렵기 때문에, 인스펙터 창에서는 이를 오일러 각(Euler Angles, $X, Y, Z$ 도 단위)으로 변환하여 보여줍니다.
+        
+- **불일치 현상**:
+    
+    - 코드에서 `transform.eulerAngles = new Vector3(0, 180, 0);`을 입력해도, 내부 변환 과정을 거치며 인스펙터에는 `(180, 0, 180)` 같은 다른 등가 각도로 표기될 수 있습니다.
+        
+    - 회전 축의 결합 방식에 따라 같은 3D 회전을 표현하는 오일러 각 조합이 무수히 많기 때문에 발생하는 정상적인 현상입니다.
+        
+
+### 2. 회전 값에 대한 올바른 처리
+
+- **`eulerAngles` 직접 조작의 한계**:
+    
+    - `transform.eulerAngles += new Vector3(0, 10, 0);`처럼 매 프레임 오일러 각을 직접 더하는 방식은 각도가 0도와 360도를 넘나들 때 튀는 현상이나 보간 오류를 유발하기 쉽습니다.
+        
+- **권장 처리 방식**:
+    
+    - **회전 누적/연산**: 쿼터니언 곱셈(`*`)을 사용합니다.
+        
+        C#
+        
+        ```
+        // y축 기준으로 30도 회전 누적
+        transform.rotation *= Quaternion.Euler(0, 30f, 0);
+        ```
+        
+    - **부드러운 회전 보간**: 오일러 각 대신 `Quaternion.Slerp`를 사용합니다.
+        
+        C#
+        
+        ```
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
+        ```
+        
+    - **간단한 상대 회전**: `transform.Rotate(Vector3.up * speed * Time.deltaTime)`를 사용하는 것이 안전합니다.
+
+
+### 오일러 각과 짐벌락(Gimbal Lock) 문제
+
+- **짐벌락의 발생 원인**:
+    
+    - 오일러 각 회전은 한 번에 3개 축을 동시에 돌리는 것이 아니라, 특정 순서(유니티 기준: $Z \rightarrow X \rightarrow Y$)로 축을 순차적으로 회전시킵니다.
+        
+    - 이 과정에서 두 번째 회전축($X$축)이 $\pm 90^\circ$ 회전하여 첫 번째 축($Z$축)과 세 번째 축($Y$축)이 동일 평면상에 겹치게 되면, **3차원 회전 중 1개 자유도를 잃어버리는 현상**이 발생합니다.
+        
+- **영향**:
+    
+    - 짐벌락에 빠지면 특정 방향으로의 회전 제어가 불가능해지거나, 회전 애니메이션 보간 시 원치 않는 축으로 360도 꼬여버리는 오작동이 일어납니다.
+        
+- **해결책**:
+    
+    - **쿼터니언(사원수) 사용**: 쿼터니언은 축 순서에 의존하지 않고 4차원 복소수 공간에서 회전을 단일 축-각도 방식으로 표현하므로 짐벌락이 원천적으로 발생하지 않습니다.
+        
+
+- 유니티의 축의 의존성 
+
+![[Pasted image 20261012111734.png]]
+
+- Y X Z 순으로 부모 자식 관계라 생각하자 Y를 움직이면 X, Z 모두 영향
+	Z만 움직이면 영향이 없다 자식 혼자 움직인게 되니까
+
+- 축을 돌리는 순서는 아니다 축의 부모관계일 뿐
+
+![[Pasted image 20261012112110.png]]
+
+- x를 돌리다 보면z축이 Y축과 똑같아 져버리는 순간이 옴 이때는 축이 그냥 2개밖에안되는 순간이 온거임 Z, Y 축이 구분이 없어져버림
+
+**이때 발생하는게 짐벌락이다 **
+**축이 겹쳐지는 현상으로 인해 하나의 각도를 표현하는게 2개 이상이 된다(축이 의존해서 영향을 받으니까 축의 양의 방향 음의 방향이 뒤집어지고) **
+
+
+### 오일러 vs 쿼터니언
+
+| **구분**                    | **오일러 각 (Euler Angles)**       | **쿼터니언 (Quaternion)**                |
+| ------------------------- | ------------------------------ | ------------------------------------ |
+| **구성 요소**                 | 3차원 벡터 $(X, Y, Z)$             | 4차원 복소수 $(x, y, z, w)$               |
+| **회전 방식**                 | 각 축($X, Y, Z$)을 정해진 순서대로 순차 회전 | 임의의 회전축 벡터와 해당 축 기준 회전각으로 표현         |
+| **직관성**                   | 직관적 (각도 단위로 사람이 이해하기 쉬움)       | 비직관적 (수학적 4원수 체계로 직관적 해석 어려움)        |
+| **짐벌락 위험**                | **발생함** (특정 각도에서 회전 자유도 1개 상실) | **발생하지 않음**                          |
+| **회전 보간 (Interpolation)** | 각도 간 보간 시 축 꼬임 및 부자연스러운 궤적 발생  | `Slerp`(구면 선형 보간)를 통해 최단 경로로 부드럽게 보간 |
+| **메모리 / 연산량**             | float 3개 (적은 메모리)              | float 4개 (정규화 등 추가 연산 필요)            |
+
+
+★ **정리 하자면 오일러각과 쿼터니언 등 각도의 값을 720,540 등으로 넣어도 360도 한바퀴에 대한 정보 밖에 없기 때문에 각도의 값이 중요하다면 각도의 값을 최종적으로 대입하기 이전에 값을 따로 캐싱해서 처리한 뒤 대입하는게 중요하다**
+
+
+### 그래서 쿼터니언을 쓰자
+- transform.Roatate(Vector3.right); // 쿼터니언 기반으로 돔
+- transform.Roatate(Vector3.right, Space); // 쿼터니언 기반으로 돔
+- 쿼터니언을 써도 일괄적으로 증감시키는 방식은 축의 영향을 주긴함
+
+### Quaternion.Euler 함수
+
+`Quaternion.Euler`는 유니티에서 **사람이 이해하기 쉬운 오일러 각도(Degree 단위의 $X, Y, Z$)를 엔진 내부 연산용 쿼터니언(Quaternion) 구조체로 변환**해 주는 함수.
+
+쿼터니언을 직접 인스턴스화하거나 복잡한 수식을 계산하지 않고도 직관적인 각도로 회전 값을 생성할 때 가장 많이 사용
+
+### 1. 문법 및 기본 사용법
+
+
+C#
+
+```
+// 1. float 값 3개를 직접 전달
+Quaternion rotationA = Quaternion.Euler(xAngle, yAngle, zAngle);
+
+// 2. Vector3 형태로 전달
+Quaternion rotationB = Quaternion.Euler(new Vector3(xAngle, yAngle, zAngle));
+```
+
+**기본 예시:**
+
+C#
+
+```
+void Start()
+{
+    // Y축 기준으로 90도 회전한 쿼터니언 생성 후 오브젝트에 적용
+    transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+}
+```
+
+### 2. 내부 회전 축 적용 순서
+
+`Quaternion.Euler(x, y, z)`는 축을 동시에 돌리지 않고, 유니티의 기본 오일러 회전 순서인 **Z축 $\rightarrow$ X축 $\rightarrow$ Y축 순서**로 축을 연속 회전하여 최종 쿼터니언을 합성합니다.
+
+1. **Z축(Roll)** 기준 회전 적용
+    
+2. **X축(Pitch)** 기준 회전 적용
+    
+3. **Y축(Yaw)** 기준 회전 적용
+    
+
+> **참고:** 이 축 적용 순서 때문에 X축 각도가 $\pm 90^\circ$에 도달할 때 오일러 특유의 짐벌락(Gimbal Lock) 위험이 발생할 수 있습니다.
+
+### 3. 실무 활용 패턴
+
+#### 1) 기존 회전에 추가 회전 합성 (쿼터니언 곱셈)
+
+회전을 누적할 때는 덧셈(`+`)이 아닌 쿼터니언 곱셈(`*`)을 사용해야 합니다.
+
+C#
+
+```
+// 현재 회전 상태에서 추가로 Y축 기준 45도 회전
+transform.rotation = transform.rotation * Quaternion.Euler(0f, 45f, 0f);
+```
+
+#### 2) 부드러운 회전 보간 (`Slerp`)
+
+목표 각도를 `Quaternion.Euler`로 생성한 뒤 보간합니다.
+
+C#
+
+```
+[SerializeField] private float targetYAngle = 180f;
+[SerializeField] private float rotateSpeed = 5f;
+
+void Update()
+{
+    Quaternion targetRotation = Quaternion.Euler(0f, targetYAngle, 0f);
+    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
+}
+```
+
+#### 3) FPS 카메라 상하/좌우 각도 제한 (Clamp)
+
+카메라 회전 시 `transform.eulerAngles`에 값을 직접 더하지 않고, 오일러 누적 변수를 `Mathf.Clamp`로 제한한 뒤 매 프레임 `Quaternion.Euler`로 재할당하는 방식이 표준적입니다.
+
+C#
+
+```
+private float pitch = 0f; // 상하 회전각
+
+void Update()
+{
+    float mouseY = Input.GetAxis("Mouse Y");
+    pitch -= mouseY * 2f;
+    pitch = Mathf.Clamp(pitch, -80f, 80f); // 고개 꺾임 한계 설정
+
+    // 계산된 각도로 카메라 로컬 회전 갱신
+    transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+}
+```
+
+### 4. 주의해야 할 점
+
+- **단위는 라디안(Radian)이 아닌 도(Degree)**: 라디안 변환 없이 각도 수치(예: $0 \sim 360$)를 그대로 넘겨야 합니다.
+    
+- **`transform.eulerAngles`와의 차이**:
+    
+    - `transform.eulerAngles` 프로퍼티 내부에서도 사실상 `Quaternion.Euler`와 역변환 연산이 일어납니다.
+        
+    - 하지만 `transform.eulerAngles.x += 10f`처럼 구조체 필드를 직접 수정하는 것은 허용되지 않으며, `transform.rotation = Quaternion.Euler(...)` 형태로 명시적으로 할당하는 것이 의도를 명확히 하고 잠재적 버그를 줄입니다.
+
+
+![[Pasted image 20261012141418.png]]
