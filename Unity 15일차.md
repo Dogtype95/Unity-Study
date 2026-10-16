@@ -133,3 +133,9 @@ public class SimplePlayerMove : MonoBehaviour
 ### InputAction 에셋
 
 ![[Pasted image 20261015141256.png]]
+
+
+### Input System 예제들
+- 패키지 매니저에 예시들이 있다.
+
+![[Pasted image 20261016103806.png]]
