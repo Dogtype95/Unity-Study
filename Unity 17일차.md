@@ -81,3 +81,103 @@ Unity의 물리 매트릭스(Layer Collision Matrix)는 **어떤 레이어(Layer
 | **전달 데이터** | `Collision` 객체 (충돌 지점, 반발력, 접촉면 법선 벡터 포함) | `Collider` 객체 (접촉한 상대방의 콜라이더 정보만 포함)  |
 | **주요 용도**  | 바닥, 벽, 장애물, 물리 시뮬레이션                      | 아이템 획득, 포탈, 퀘스트/시네마틱 감지 구역, 시야/공격 사거리 |
 ![[Pasted image 20261016151759.png]]
+
+
+| **구분**              | **물리 충돌 (OnCollision*)**                                                                 | **트리거 충돌 (OnTrigger*)**                                                            |
+| ------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **`Is Trigger` 상태** | 두 콜라이더 모두 **체크 해제**                                                                      | 둘 중 최소 하나가 **체크됨**                                                                 |
+| **물리 반응**           | 튕겨나감, 밀림, 마찰 등 물리 법칙 적용                                                                  | 저항 없이 통과함 (단순 통과 감지용)                                                              |
+| **이벤트 메서드**         | `OnCollisionEnter`<br><br>  <br><br>`OnCollisionStay`<br><br>  <br><br>`OnCollisionExit` | `OnTriggerEnter`<br><br>  <br><br>`OnTriggerStay`<br><br>  <br><br>`OnTriggerExit` |
+| **매개변수**            | **`Collision`** 객체 전달 (접촉점, 반발력 등 상세 데이터)                                                | **`Collider`** 컴포넌트 전달 (상대방 콜라이더 정보만)                                              |
+| **주요 사용처**          | 벽/바닥 충돌, 물리 밀치기, 단단한 물체                                                                  | 포탈, 체크포인트, 코인/아이템 획득 영역, 피격 판정 범위                                                  |
+
+### Collision과 Collider의 차이
+
+이름이 비슷해 혼동하기 쉬우나, **컴포넌트 자체**와 **충돌 순간의 보고서**라는 명확한 차이가 있습니다.
+
+- **`Collider` (컴포넌트/엔티티):**
+    
+    - 오브젝트의 충돌 영역(외형 형태)을 정의하는 컴포넌트 (`BoxCollider`, `SphereCollider`, `MeshCollider` 등).
+        
+    - 씬 상에 항상 존재하며 `bounds`, `enabled`, `isTrigger` 등의 설정을 가집니다.
+        
+- **`Collision` (충돌 결과 데이터 클래스):**
+    
+    - 물리 충돌이 발생한 순간 물리 엔진이 생성하여 전달하는 **데이터 객체**.
+        
+    - 부딪힌 상대방(`gameObject`, `transform`, `rigidbody`), 충돌 지점 좌표 및 법선 벡터(`ContactPoint`), 충돌 시 전달된 상대 속도(`relativeVelocity`)와 충격량(`impulse`)을 담고 있습니다.
+
+### . Invoke 함수와 충돌 후 지연 처리
+
+`Invoke`는 지정한 메서드를 일정 시간 뒤 지연 호출하거나 반복 실행할 때 사용합니다. 충돌 후 즉시 처리하지 않고 딜레이를 주어야 하는 상황(예: 함정 발동 후 1초 뒤 폭발, 아이템 획득 후 리스폰 등)에 자주 쓰입니다.
+
+
+```C#
+public class Trap : MonoBehaviour
+{
+    private Collider trapCollider;
+
+    private void Awake()
+    {
+        trapCollider = GetComponent<Collider>();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            // 1.5초 뒤 폭발 실행
+            Invoke(nameof(Explode), 1.5f);
+        }
+    }
+
+    private void Explode()
+    {
+        Debug.Log("함정 폭발!");
+        // 폭발 로직...
+    }
+
+    private void OnDisable()
+    {
+        // 오브젝트가 비활성화될 때 대기 중인 Invoke 취소 (에러 방지 필수)
+        CancelInvoke(nameof(Explode));
+    }
+}
+```
+
+> **코루틴(Coroutine)과의 차이:**
+> 
+> `Invoke`는 문자열 기반(또는 `nameof`)으로 호출되어 가볍고 단순한 지연에 편하지만, 파라미터를 넘길 수 없고 일시 정지/재개가 불가능합니다. 파라미터 전달이나 복잡한 흐름 제어가 필요하다면 코루틴을 사용하는 것이 좋습니다.
+
+### 4. 충돌과 컴포넌트 활성화/비활성화
+
+충돌 시 특정 컴포넌트를 켜거나 끄는 처리는 게임 상태 전환의 기본 패턴입니다.
+
+#### 자주 사용하는 제어 대상
+
+1. **Collider 끄기 (`col.enabled = false`):** 몬스터 사망 시 다단 히트 방지, 수집 아이템의 중복 획득 방지.
+    
+2. **이동 스크립트 끄기 (`movement.enabled = false`):** 피격 경직(Stun) 구현.
+    
+3. **오브젝트 전체 비활성화 (`gameObject.SetActive(false)`):** 풀링 시스템으로 반환.
+    
+
+
+
+```C#
+private void OnTriggerEnter(Collider other)
+{
+    if (other.CompareTag("Bullet"))
+    {
+        // 1. 중복 피격 방지를 위해 피격자 콜라이더 즉시 비활성화
+        GetComponent<Collider>().enabled = false;
+
+        // 2. 이동 제어 스크립트 비활성화 (경직 상태)
+        PlayerMovement movement = GetComponent<PlayerMovement>();
+        if (movement != null) movement.enabled = false;
+
+        // 3. 총알 오브젝트 비활성화 (풀링 회수)
+        other.gameObject.SetActive(false);
+    }
+}
+```
