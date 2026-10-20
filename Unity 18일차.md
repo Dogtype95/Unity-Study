@@ -106,3 +106,86 @@ private void OnCollisionEnter(Collision collision)
 - 이미지 상의 1, 2, 3으로 설정해주면 댐 3번은 그떨림 정도를 나타냄 2번은 프리셋 미리만들어둔 떨림 효과에 대한
 
 ![[Pasted image 20261019164841.png|351]]
+
+### Position Composer (Cinemachine)
+
+Cinemachine 3.x 버전부터 기존의 `Transposer`와 `Composer`가 **Position Composer**와 **Rotation Composer** 등으로 체계화되었습니다. 카메라의 월드 위치를 타깃(Follow) 기준으로 제어할 때 사용합니다.
+
+- **핵심 역할:** Follow 타깃을 기준으로 카메라의 거리, 높이, 오프셋을 일정하게 유지하며 따라가는 위치 알고리즘입니다.
+    
+- **주요 세팅 항목:**
+    
+    - **Camera Distance:** 타깃과 카메라 사이의 기본 거리.
+        
+    - **Target Offset:** 피벗 위치(보통 캐릭터의 발 대신 가슴/머리 위치로 올리기 위해 Y축을 1.2~1.6m 정도로 설정).
+        
+    - **Damping (X, Y, Z):** 타깃이 이동할 때 카메라가 반응하는 지연 시간(부드러움 정도). 0이면 즉시 고정되며, 0.5~1.0 정도로 두면 부드러운 유체감이 생깁니다.
+        
+
+### 2. 게임 뷰 가이드 (Game View Guides / Framing Overlay)
+
+카메라 조준 영역을 시각적으로 모니터링할 수 있는 오버레이 격자선입니다.
+
+- **확인 방법:** 가상 카메라 인스펙터 상단 또는 컴포넌트 옵션에서 **Game View Guides**를 체크하면 Game 뷰에 반투명한 색상 영역이 표시됩니다.
+    
+- **구역별 의미:**
+    
+    - **Dead Zone (노란색/투명 영역 중앙):** 타깃이 이 박스 안에서 움직일 때는 카메라가 회전하거나 위치를 틀지 않고 가만히 유지됩니다. (불필요한 미세 떨림 방지)
+        
+    - **Soft Zone (파란색 영역):** 타깃이 Dead Zone을 벗어나 이 영역에 진입하면 카메라가 부드럽게(Damping 적용) 따라붙습니다.
+        
+    - **Hard Limit (빨간색 영역/경계):** 타깃이 이 경계를 절대 벗어나지 못하도록 카메라가 강제로 즉시 추적합니다.
+    - ### 3인칭 회전 (3rd Person Follow / FreeLook Orbit)
+
+플레이어 마우스 또는 패드 입력에 맞춰 캐릭터 주위를 공전(Orbit)하는 3인칭 시점 구현 방식입니다.
+
+- **Cinemachine 3rd Person Follow:**
+    
+    - 어깨 너머 뷰(Over-the-shoulder)나 일반 액션 RPG 뷰를 만들 때 가장 직관적입니다.
+        
+    - **Shoulder Offset / Vertical Arm Length:** 카메라가 플레이어의 오른쪽 어깨 너머를 비출지, 중앙을 비출지 결정합니다.
+        
+    - **Obstacle Handling (충돌 처리):** 벽에 카메라가 파묻히지 않도록 `Cinemachine Deoccluder`(구 버전의 `Cinemachine Collider`) 컴포넌트를 함께 붙여 카메라 거리를 자동으로 좁히도록 구성합니다.
+        
+- **FreeLook 방식 (Cinemachine 2.x/3.x 공통 개념):**
+    
+    - Top, Middle, Bottom의 3단 링(Ring) 반경과 높이를 지정하여 마우스 Y축 입력에 따라 위아래로 자연스럽게 기울어지게 설계할 때 유용합니다.
+        
+
+### 4. 펄린 노이즈 (Perlin Noise / Camera Shake)
+
+카메라에 자연스러운 흔들림(손떨림, 달리기 충격, 폭발 등)을 줄 때 사용하는 절차적 노이즈 알고리즘입니다.
+
+- **적용 위치:** 가상 카메라의 **Noise** 슬롯 (Cinemachine Basic Multi-Channel Perlin 선택).
+    
+- **Noise Profile 선택:**
+    
+    - `Handheld_tele_mild`: 가벼운 핸드헬드 손떨림.
+        
+    - `Shake_explosion`: 폭발 시 큰 진동.
+        
+- **핵심 조절 파라미터:**
+    
+    - **Amplitude Gain (진폭):** 흔들림의 크기(강도). 폭발 시 일시적으로 수치를 2~5까지 올렸다가 서서히 0으로 복귀시킵니다.
+        
+    - **Frequency Gain (진동수):** 흔들림의 속도(빈도). 수치가 높을수록 잘게 떱니다.
+        
+- **Impulse Extension:** 폭발이나 피격 같은 일회성 충격은 노이즈를 수동 조절하는 대신 **Cinemachine Impulse Listener / Source** 시스템을 연동하면 이벤트 기반으로 손쉽게 처리할 수 있습니다.
+
+### Trail 렌더러 (Trail Renderer)
+
+칼의 궤적, 총알 궤적, 이동 잔상 등을 남기는 유니티 기본 시각효과 컴포넌트입니다.
+
+- **동작 원리:** 오브젝트가 공간을 이동할 때 이전 프레임의 위치 기록을 바탕으로 폴리곤 띠(Mesh Ribbon)를 동적으로 생성합니다.
+    
+- **주요 세팅 항목:**
+    
+    - **Time:** 잔상이 화면에 남아있는 지속 시간(초 단위). 빠른 검광 효과는 0.1~0.25초 정도로 짧게 설정합니다.
+        
+    - **Width (Curve):** 시작 지점과 끝 지점의 두께를 커브 그래프로 지정. 보통 시작은 두껍게, 끝으로 갈수록 0으로 수렴하게 만듭니다.
+        
+    - **Color (Gradient):** 시간에 따른 색상 및 알파 페이드아웃 설정.
+        
+    - **Min Vertex Distance:** 폴리곤을 생성할 최소 이동 거리. 너무 작으면 드로우콜/버텍스가 급증하고, 너무 크면 곡선 궤적이 각져 보입니다.
+        
+    - **Material:** 반드시 Particles 셰이더(예: Universal Render Pipeline/Particles/Unlit)나 Additive 계열 셰이더를 사용하여 투명도와 빛 번짐(Bloom)을 연출해야 자연스럽습니다.

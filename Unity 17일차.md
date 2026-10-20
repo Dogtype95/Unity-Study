@@ -162,8 +162,6 @@ public class Trap : MonoBehaviour
 3. **오브젝트 전체 비활성화 (`gameObject.SetActive(false)`):** 풀링 시스템으로 반환.
     
 
-
-
 ```C#
 private void OnTriggerEnter(Collider other)
 {
@@ -181,3 +179,4 @@ private void OnTriggerEnter(Collider other)
     }
 }
 ```
+
