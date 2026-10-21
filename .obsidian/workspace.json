@@ -228,9 +228,37 @@
               "icon": "lucide-file",
               "title": "Unity 19일차"
             }
+          },
+          {
+            "id": "453478fd223af27a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Unity 19일차.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Unity 19일차"
+            }
+          },
+          {
+            "id": "894748c9115a6925",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Unity 20일차.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Unity 20일차"
+            }
           }
         ],
-        "currentTab": 15
+        "currentTab": 17
       }
     ],
     "direction": "vertical"
@@ -397,11 +425,15 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "4ace1884ba420c70",
+  "active": "894748c9115a6925",
   "lastOpenFiles": [
+    "Pasted image 20261021144657.png",
+    "Unity 19일차.md",
+    "Unity 20일차.md",
+    "Unity 프로퍼티.md",
+    "무제.md",
     "Unity 18일차.md",
     "Unity 17일차.md",
-    "Unity 19일차.md",
     "Unity 16일차.md",
     "Unity 15일차.md",
     "Unity 14일차.md",
@@ -409,7 +441,6 @@
     "Unity 13일차.md",
     "Pasted image 20261020132849.png",
     "Pasted image 20261019164841.png",
-    "Unity 프로퍼티.md",
     "Unity Class and Function.md",
     "Unity 10일차.md",
     "Unity 11일차.md",
@@ -441,7 +472,6 @@
     "캡처/21_files/images(6)",
     "캡처/21_files/m=_b,_tp",
     "캡처/21_files/islands-A-YtrT7K.js.다운로드",
-    "캡처/21_files/m=_b",
-    "환영합니다!.md"
+    "캡처/21_files/m=_b"
   ]
 }
